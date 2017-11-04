@@ -1,26 +1,31 @@
 import base64
+import json
+import time
+import urllib.request
 
 import requests
 from bs4 import BeautifulSoup
 
+HOST = '202.121.129.151:8080'
+URL = 'http://202.121.129.151:8080'
 HEADERS = {
-    'Host': '202.121.129.151:8080',
+    'Host': HOST,
     'Pragma': 'no-cache',
     'Cache-Control': 'no-cache',
     'Upgrade-Insecure-Requests': '1',
     'User-Agent': r'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36',
     'Accept': r'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
     'DNT': '1',
-    'Referer': r'http://202.121.129.151:8080/portal/',
+    'Referer': URL + '/portal/',
     'Accept-Encoding': 'gzip, deflate',
-    'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.6,en;q=0.4',
+    'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.6,en;q=0.4'
 }
 
 
 def get_params():
-    url = r'http://202.121.129.151:8080/portal/index_custom11.jsp'
+    url = URL + '/portal/index_custom11.jsp'
     res = requests.get(url, headers=HEADERS)
-    soup = BeautifulSoup(res.text)
+    soup = BeautifulSoup(res.text, "html.parser")
     user_dict = dict()
     for input_element in soup.find_all('input'):
         try:
@@ -32,9 +37,63 @@ def get_params():
     return user_dict, res.cookies
 
 
+def json_url_decode(text):
+    data = text.encode()
+    missing_padding = len(data) % 4
+    if missing_padding != 0:
+        data += b'=' * (4 - missing_padding)
+    return json.loads(urllib.request.unquote(base64.b64decode(data).decode('ascii')))
+
+
 def connect_to_wifi(username, password):
-    url = r'http://202.121.129.151:8080/portal/pws?t=lo'
+    url = URL + '/portal/pws?t=li'
     contents, cookies = get_params()
     contents['userName'] = username
     contents['userPwd'] = base64.b64encode(password.encode()).decode('ascii')
+    print('Post login info to {}'.format('/portal/pws?t=li'))
     r = requests.post(url, data=contents, headers=HEADERS, cookies=cookies)
+    res_json = json_url_decode(r.text)
+    if res_json['errorNumber'] != '1':
+        print(res_json)
+        raise res_json[res_json['e_d']]
+    cookies['hello1'] = username
+    cookies['hello2'] = 'undefined'
+    cookies['hello3'] = ''
+    cookies['hello4'] = ''
+    cookies['hello5'] = ''
+    url_list = ['/portal/page/afterLogin.jsp', '/portal/page/online.jsp',
+                '/portal/page/listenClose.jsp',
+                '/portal/page/online_heartBeat.jsp',
+                '/portal/page/online_showTimer.jsp']
+    afterLogin_params = {
+        'v_is_selfLogin': 0,
+        'loginType': 3,
+        'pl': cookies['i_p_pl']
+    }
+    online_params = {
+        'v_is_selfLogin': 0,
+        'loginType': 3,
+        'pl': cookies['i_p_pl']
+    }
+    listenClose_params = {
+        'pl': cookies['i_p_pl']
+    }
+    online_heartBeat_params = {
+        'pl': cookies['i_p_pl']
+    }
+    online_showTimer_params = {
+        'v_is_selfLogin': 0,
+        'userName': 'null',
+        'userPwd': 'null',
+        'innerStr': 'null',
+        'pl': cookies['i_p_pl'],
+        'hlo': 'null',
+        'outerStr': 'null',
+        'startTime': str(time.time()).replace('.', '')[0:13],
+        'loginType': 3
+    }
+    params_list = [afterLogin_params, online_params, listenClose_params, online_heartBeat_params,
+                   online_showTimer_params]
+    for item in zip(url_list, params_list):
+        print('Get {}'.format(item[0]))
+        requests.get(URL + item[0], params=item[1], headers=HEADERS, cookies=cookies)
