@@ -1,8 +1,10 @@
 """
 登陆信息配置文件
-os: ['mac', 'windows', 'linux']
-type: ['tel', "unicom', 'cmcc']
-log_level: ['DEBUG','INFO','WARNING','ERROR','CRITICAL']
+os: 操作系统 ('mac', 'windows', 'linux')
+type: 网络类型 ('tel', "unicom', 'cmcc')
+username: 网络账号
+password: 登陆密码
+interval: 心跳包间隔，默认值10，可不修改。
 """
 login_config = {
     'type': 'unicom',
@@ -12,6 +14,5 @@ login_config = {
 
 other_config = {
     'os': 'mac',
-    'log_level': 'INFO',
     'interval': 10
 }
