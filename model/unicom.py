@@ -45,7 +45,7 @@ def json_url_decode(text):
     return json.loads(urllib.request.unquote(base64.b64decode(data).decode('ascii')))
 
 
-def connect_to_wifi(username, password):
+def wifi_portal_login(username, password):
     url = URL + '/portal/pws?t=li'
     contents, cookies = get_params()
     contents['userName'] = username
