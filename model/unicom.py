@@ -1,7 +1,6 @@
 import base64
 import json
 import time
-import urllib.request
 
 import requests
 from bs4 import BeautifulSoup
@@ -42,7 +41,7 @@ def json_url_decode(text):
     missing_padding = len(data) % 4
     if missing_padding != 0:
         data += b'=' * (4 - missing_padding)
-    return json.loads(urllib.request.unquote(base64.b64decode(data).decode('ascii')))
+    return json.loads(requests.utils.unquote(base64.b64decode(data).decode('ascii')))
 
 
 def wifi_portal_login(username, password):
