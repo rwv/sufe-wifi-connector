@@ -1,21 +1,15 @@
-import objc
+import re
+import subprocess
 
 
-# TODO use wireless instead of pyobjc
-# https://pypi.python.org/pypi/wireless/0.3.0
-
-def get_wifi_interface():
-    objc.loadBundle('CoreWLAN',
-                    bundle_path='/System/Library/Frameworks/CoreWLAN.framework',
-                    module_globals=globals())
-    interfaces = []
-    for iname in CWInterface.interfaceNames():
-        interface = CWInterface.interfaceWithName_(iname)
-    interfaces.append({
-        'interface': iname,
-        'ssid': interface.ssid(),
-        'transmit_rate': interface.transmitRate(),
-        'transmit_power': interface.transmitPower(),
-        'rssi': interface.rssi()
-    })
-    return interfaces
+def get_wifi_ssid():
+    result = subprocess.run(
+        ['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'],
+        stdout=subprocess.PIPE)
+    result = result.stdout.decode('utf-8')
+    ssid = re.search(' SSID: (.*)\n', result)
+    if ssid:
+        ssid = ssid.group(1)
+    else:
+        ssid = ''
+    return ssid

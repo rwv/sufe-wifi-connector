@@ -38,7 +38,6 @@ $ python3 connector.py
 * [ ] Linux
 * [ ] 电信
 * [ ] 移动
-* [ ] 将 `pyobjc` 替换为 `wireless`, 减少依赖包大小以及与 Linux 共用
 * [ ] 针对 macOS 和 Linux 编写 `setup.sh`
 * [ ] Travis-CI 和 Coveralls
 * [ ] 针对 Windows 使用 py2exe 打包

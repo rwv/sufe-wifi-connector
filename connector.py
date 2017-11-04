@@ -10,17 +10,16 @@ from utils.test_connection import test_connection
 
 user_os = import_module('utils.{}'.format(other_config['os']))
 network_type = import_module('model.{}'.format(login_config['type']))
-network_info = user_os.get_wifi_interface()
+network_ssid = user_os.get_wifi_ssid()
 previous_ssid = ''
-wifi = network_info[0]
 # Initializing a empty Timer
 heartbeat_timer = perpetualTimer(0, lambda: 0)
 heartbeat_timer.cancel()
 while True:
-    if wifi['ssid'] == 'sufe-{}'.format(login_config['type']):
-        if previous_ssid != wifi['ssid']:
-            print('Current Network SSID is {}'.format(wifi['ssid']))
-            previous_ssid = wifi['ssid']
+    if network_ssid == 'sufe-{}'.format(login_config['type']):
+        if previous_ssid != network_ssid:
+            print('Current Network SSID is {}'.format(network_ssid))
+            previous_ssid = network_ssid
         if not test_connection():
             heartbeat_timer.cancel()
             print('Unable to connect the internet')
@@ -29,7 +28,7 @@ while True:
             heartbeat_timer.start()
     else:
         heartbeat_timer.cancel()
-        if previous_ssid != wifi['ssid']:
-            print('Current Network SSID is {}'.format(wifi['ssid']))
-            previous_ssid = wifi['ssid']
+        if previous_ssid != network_ssid:
+            print('Current Network SSID is {}'.format(network_ssid))
+            previous_ssid = network_ssid
     sleep(other_config['interval'])
