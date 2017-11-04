@@ -12,5 +12,6 @@ login_config = {
 
 other_config = {
     'os': 'mac',
-    'log_level': 'INFO'
+    'log_level': 'INFO',
+    'interval': 10
 }
