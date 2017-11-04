@@ -11,8 +11,9 @@ network_type = import_module('model.{}'.format(login_config['type']))
 
 network_info = user_os.get_wifi_interface()
 for i in network_info:
-    if not test_connection():
+    if test_connection():
         print('Unable to connect the internet')
         if i['ssid'] == 'sufe-{}'.format(login_config['type']):
             print('Current Network SSID is {}'.format('sufe-{}'.format(login_config['type'])))
-            network_type.wifi_portal_login(login_config['username'], login_config['password'])
+            do_heartbeat = network_type.wifi_portal_login(login_config['username'], login_config['password'])
+            do_heartbeat()

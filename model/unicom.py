@@ -65,28 +65,29 @@ def wifi_portal_login(username, password):
                 '/portal/page/listenClose.jsp',
                 '/portal/page/online_heartBeat.jsp',
                 '/portal/page/online_showTimer.jsp']
+    pl = res_json['portalLink']
     afterLogin_params = {
         'v_is_selfLogin': 0,
         'loginType': 3,
-        'pl': cookies['i_p_pl']
+        'pl': pl
     }
     online_params = {
         'v_is_selfLogin': 0,
         'loginType': 3,
-        'pl': cookies['i_p_pl']
+        'pl': pl
     }
     listenClose_params = {
-        'pl': cookies['i_p_pl']
+        'pl': pl
     }
     online_heartBeat_params = {
-        'pl': cookies['i_p_pl']
+        'pl': pl
     }
     online_showTimer_params = {
         'v_is_selfLogin': 0,
         'userName': 'null',
         'userPwd': 'null',
         'innerStr': 'null',
-        'pl': cookies['i_p_pl'],
+        'pl': pl,
         'hlo': 'null',
         'outerStr': 'null',
         'startTime': str(time.time()).replace('.', '')[0:13],
@@ -97,3 +98,21 @@ def wifi_portal_login(username, password):
     for item in zip(url_list, params_list):
         print('Get {}'.format(item[0]))
         requests.get(URL + item[0], params=item[1], headers=HEADERS, cookies=cookies)
+    return lambda: do_heartbeat(pl, cookies)
+
+
+def do_heartbeat(portal_link, cookies):
+    url = URL + '/portal/page/doHeartBeat.jsp?pl={}'.format(portal_link)
+    res_json = json_url_decode(portal_link)
+    contents = {
+        'user_ip': res_json['clientPrivateIp'],
+        'bas_ip': res_json['nasIp'],
+        'userDevPort': res_json['userDevPort'],
+        'userStatus': res_json['userStatus'],
+        'serialNo': res_json['serialNo'],
+        'language': res_json['clientLanguage'],
+        'e_d': '',
+        't': 'hb'
+    }
+    print('Post heartbeat to {}'.format('portal/page/doHeartBeat.jsp'))
+    requests.post(url, data=contents, cookies=cookies, headers=HEADERS)
