@@ -1,6 +1,9 @@
 import objc
 
 
+# TODO use wireless instead of pyobjc
+# https://pypi.python.org/pypi/wireless/0.3.0
+
 def get_wifi_interface():
     objc.loadBundle('CoreWLAN',
                     bundle_path='/System/Library/Frameworks/CoreWLAN.framework',
