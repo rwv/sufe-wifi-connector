@@ -25,11 +25,12 @@ while True:
             print('Fail to connect to the internet')
             print('Trying to login the Wi-Fi portal')
             do_heartbeat = None
-            for i in range(other_config['retry-interval']):
+            for i in range(other_config['retry-times']):
                 try:
                     do_heartbeat = network_type.wifi_portal_login(login_config['username'], login_config['password'])
                 except:
                     print('Portal login failed for {} times'.format(i))
+                    sleep(other_config['retry-interval'])
                     pass
                 else:
                     print('Login succeeded')
