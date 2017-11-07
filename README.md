@@ -8,14 +8,15 @@ Shanghai University of Finance and Economics Wi-Fi connector
 |  | 电信 | 联通 | 移动 |
 | :-: | :-: | :-: | :-: |
 | Windows |  |  |  |
-| macOS |  | √  |  |
-| Linux |  | √ |  |
+| macOS |  | √ | √ |
+| Linux |  | √ | √ |
 
 
 注：
 
 1. 联通在 macOS 10.13 上经过测试成功
-1. Not tested on Linux
+1. Linux 未测试
+1. 移动未测试（似乎登陆逻辑和联通一样）
 
 ## 使用方法
 
@@ -52,7 +53,7 @@ $ python3 connector.py
 * [ ] Windows
 * [x] Linux
 * [ ] 电信
-* [ ] 移动
+* [x] 移动
 * [ ] 针对 macOS 和 Linux 编写 `setup.sh`
 * [ ] Travis-CI 和 Coveralls
 * [ ] 针对 Windows 使用 py2exe 打包
