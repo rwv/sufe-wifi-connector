@@ -22,14 +22,17 @@ while True:
             previous_ssid = network_ssid
         if not test_connection():
             heartbeat_timer.cancel()
-            print('Unable to connect the internet')
+            print('Fail to connect to the internet')
+            print('Trying to login the Wi-Fi portal')
             do_heartbeat = None
             for i in range(other_config['retry-interval']):
                 try:
                     do_heartbeat = network_type.wifi_portal_login(login_config['username'], login_config['password'])
                 except:
+                    print('Portal login failed for {} times'.format(i))
                     pass
                 else:
+                    print('Login succeeded')
                     break
             if not do_heartbeat:
                 raise Exception('Fail to login')
