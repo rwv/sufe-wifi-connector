@@ -10,12 +10,12 @@ from utils.test_connection import test_connection
 
 user_os = import_module('utils.{}'.format(other_config['os']))
 network_type = import_module('model.{}'.format(login_config['type']))
-network_ssid = user_os.get_wifi_ssid()
 previous_ssid = ''
 # Initializing a empty Timer
 heartbeat_timer = perpetualTimer(0, lambda: 0)
 heartbeat_timer.cancel()
 while True:
+    network_ssid = user_os.get_wifi_ssid()
     if network_ssid == 'sufe-{}'.format(login_config['type']):
         if previous_ssid != network_ssid:
             print('Current Network SSID is {}'.format(network_ssid))
@@ -23,7 +23,16 @@ while True:
         if not test_connection():
             heartbeat_timer.cancel()
             print('Unable to connect the internet')
-            do_heartbeat = network_type.wifi_portal_login(login_config['username'], login_config['password'])
+            do_heartbeat = None
+            for i in range(other_config['retry-interval']):
+                try:
+                    do_heartbeat = network_type.wifi_portal_login(login_config['username'], login_config['password'])
+                except:
+                    pass
+                else:
+                    break
+            if not do_heartbeat:
+                raise Exception('Fail to login')
             heartbeat_timer = perpetualTimer(600, do_heartbeat)
             heartbeat_timer.start()
     else:

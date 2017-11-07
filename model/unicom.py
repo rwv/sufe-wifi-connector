@@ -54,7 +54,7 @@ def wifi_portal_login(username, password):
     res_json = json_url_decode(r.text)
     if res_json['errorNumber'] != '1':
         print(res_json)
-        raise res_json[res_json['e_d']]
+        raise Exception(res_json[res_json['e_d']])
     cookies['hello1'] = username
     cookies['hello2'] = 'undefined'
     cookies['hello3'] = ''
