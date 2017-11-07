@@ -9,5 +9,5 @@ def test_connection():
             return True
         else:
             return False
-    except (ConnectionError, requests.exceptions.Timeout) as e:
+    except:
         return False
