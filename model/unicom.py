@@ -4,6 +4,7 @@ import time
 
 import requests
 from bs4 import BeautifulSoup
+from utils.log import logging
 
 HOST = '202.121.129.151:8080'
 URL = 'http://202.121.129.151:8080'
@@ -23,6 +24,7 @@ HEADERS = {
 
 def get_params():
     url = URL + '/portal/index_custom11.jsp'
+    logging.info('Get {}'.format(url))
     res = requests.get(url, headers=HEADERS)
     soup = BeautifulSoup(res.text, "html.parser")
     user_dict = dict()
@@ -33,6 +35,7 @@ def get_params():
             continue
     user_dict.pop('login')
     user_dict.pop('logout')
+    logging.debug(user_dict)
     return user_dict, res.cookies
 
 
@@ -49,11 +52,14 @@ def wifi_portal_login(username, password):
     contents, cookies = get_params()
     contents['userName'] = username
     contents['userPwd'] = base64.b64encode(password.encode()).decode('ascii')
-    print('Post login info to {}'.format('/portal/pws?t=li'))
+    logging.info('Post {}'.format(url))
+    logging.debug('Contents: {}'.format(str(contents)))
     r = requests.post(url, data=contents, headers=HEADERS, cookies=cookies)
+    logging.debug('Response: {}'.format(r.text))
     res_json = json_url_decode(r.text)
+    logging.debug('Response decoded: {}'.format(str(res_json)))
     if res_json['errorNumber'] != '1':
-        print(res_json)
+        logging.debug(res_json)
         raise Exception(res_json[res_json['e_d']])
     cookies['hello1'] = username
     cookies['hello2'] = 'undefined'
@@ -65,6 +71,7 @@ def wifi_portal_login(username, password):
                 '/portal/page/online_heartBeat.jsp',
                 '/portal/page/online_showTimer.jsp']
     pl = res_json['portalLink']
+    logging.debug('The portal Link is {}'.format(pl))
     afterLogin_params = {
         'v_is_selfLogin': 0,
         'loginType': 3,
@@ -95,7 +102,8 @@ def wifi_portal_login(username, password):
     params_list = [afterLogin_params, online_params, listenClose_params, online_heartBeat_params,
                    online_showTimer_params]
     for item in zip(url_list, params_list):
-        print('Get {}'.format(item[0]))
+        logging.info('Get {}'.format(URL + item[0]))
+        logging.debug('Parameters: {}'.item[1])
         requests.get(URL + item[0], params=item[1], headers=HEADERS, cookies=cookies)
     return lambda: do_heartbeat(pl, cookies)
 
@@ -113,5 +121,6 @@ def do_heartbeat(portal_link, cookies):
         'e_d': '',
         't': 'hb'
     }
-    print('Post heartbeat to {}'.format('portal/page/doHeartBeat.jsp'))
+    logging.info('Post {}'.format(url))
+    logging.debug('Contents: {}'.format(str(res_json)))
     requests.post(url, data=contents, cookies=cookies, headers=HEADERS)

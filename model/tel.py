@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import re
+from utils.log import logging
 
 HOST = 'wlan.ct10000.com'
 URL = 'http://wlan.ct10000.com'
@@ -19,10 +20,12 @@ HEADERS = {
 
 
 def get_params():
+    logging.info('Get http://www.example.com')
     res = requests.get('http://www.example.com')
     soup = BeautifulSoup(res.text, "html.parser")
     index_url = URL + soup.find_all('frame')[1]['src']
     HEADERS['Referer'] = res.url
+    logging.info('Get {}'.format(index_url))
     index = requests.get(index_url, headers=HEADERS)
     index_soup = BeautifulSoup(index.text, "html.parser")
     user_dict = dict()
@@ -43,6 +46,8 @@ def wifi_portal_login(username, password):
     contents['UserName'] = username
     contents['PassWord'] = password
     HEADERS['Referer'] = ref
+    logging.info('Post {}'.format(url))
+    logging.debug('Contents: {}'.format(str(contents)))
     r = requests.post(url, headers=HEADERS, data=contents)
     if re.search('login_fail', r.text):
         error_msg = re.findall('\n\t\t\t(.*)<br />', r.text)[0]

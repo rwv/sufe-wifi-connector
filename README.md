@@ -57,6 +57,6 @@ $ python3 connector.py
 * [ ] 针对 macOS 和 Linux 编写 `setup.sh`
 * [ ] Travis-CI 和 Coveralls
 * [ ] 针对 Windows 使用 py2exe 打包
-* [ ] Log
+* [x] Log
 
 

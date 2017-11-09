@@ -7,6 +7,7 @@ password: 登陆密码
 interval: 检测网络联通性间隔，默认值10，可不修改。
 retry-times: 登陆失败重试次数
 retry-interval: 登陆失败重试间隔
+log-level: 日志记录等级 ('CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG')
 """
 login_config = {
     'type': 'unicom',
@@ -18,5 +19,6 @@ other_config = {
     'os': 'mac',
     'interval': 10,
     'retry-times': 10,
-    'retry-interval': 3
+    'retry-interval': 3,
+    'log-level': 'INFO'
 }
