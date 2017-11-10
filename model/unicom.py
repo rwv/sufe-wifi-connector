@@ -103,7 +103,7 @@ def wifi_portal_login(username, password):
                    online_showTimer_params]
     for item in zip(url_list, params_list):
         logging.info('Get {}'.format(URL + item[0]))
-        logging.debug('Parameters: {}'.item[1])
+        logging.debug('Parameters: {}'.format(str(item[1])))
         requests.get(URL + item[0], params=item[1], headers=HEADERS, cookies=cookies)
     return lambda: do_heartbeat(pl, cookies)
 
