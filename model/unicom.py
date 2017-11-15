@@ -121,6 +121,7 @@ def do_heartbeat(portal_link, cookies):
         'e_d': '',
         't': 'hb'
     }
-    logging.info('Post {}'.format(url))
+    logging.info('Post {}'.format(URL + '/portal/page/doHeartBeat.jsp'))
+    logging.info('Do heartbeat')
     logging.debug('Contents: {}'.format(str(res_json)))
     requests.post(url, data=contents, cookies=cookies, headers=HEADERS)
