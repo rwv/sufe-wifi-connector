@@ -3,7 +3,6 @@ import re
 
 
 def get_wifi_ssid():
-    result = check_output(["netsh", "wlan", "show", "network"])
-    result = result.decode("gbk")
-    ssid = re.findall('SSID\s+: (.*) \n', result)[0]
+    results = check_output(["netsh", "wlan", "show", "interfaces"], shell=True).decode('gbk')
+    ssid = re.findall('SSID\s*: (.*)\r\n', results)[0]
     return ssid
