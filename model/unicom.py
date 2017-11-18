@@ -47,9 +47,39 @@ def json_url_decode(text):
     return json.loads(requests.utils.unquote(base64.b64decode(data).decode('ascii')))
 
 
+def do_heartbeat(portal_link, cookies):
+    url = URL + '/portal/page/doHeartBeat.jsp?pl={}'.format(portal_link)
+    res_json = json_url_decode(portal_link)
+    contents = {
+        'user_ip': res_json['clientPrivateIp'],
+        'bas_ip': res_json['nasIp'],
+        'userDevPort': res_json['userDevPort'],
+        'userStatus': res_json['userStatus'],
+        'serialNo': res_json['serialNo'],
+        'language': res_json['clientLanguage'],
+        'e_d': '',
+        't': 'hb'
+    }
+    logging.info('Post {}'.format(URL + '/portal/page/doHeartBeat.jsp'))
+    logging.info('Do heartbeat')
+    logging.debug('Contents: {}'.format(str(res_json)))
+    requests.post(url, data=contents, cookies=cookies, headers=HEADERS)
+
+
+def do_logout(contents=None, cookies=None):
+    if not contents:
+        contents, cookies = get_params()
+    url = URL + '/portal/pws?t=lo'
+    logging.info('Post {}'.format(url))
+    logging.debug('Contents: {}'.format(str(contents)))
+    r = requests.post(url, data=contents, headers=HEADERS, cookies=cookies)
+    logging.debug('Response: {}'.format(r.text))
+
+
 def wifi_portal_login(username, password):
     url = URL + '/portal/pws?t=li'
     contents, cookies = get_params()
+    logout = lambda: do_logout(contents, cookies)
     contents['userName'] = username
     contents['userPwd'] = base64.b64encode(password.encode()).decode('ascii')
     logging.info('Post {}'.format(url))
@@ -105,23 +135,5 @@ def wifi_portal_login(username, password):
         logging.info('Get {}'.format(URL + item[0]))
         logging.debug('Parameters: {}'.format(str(item[1])))
         requests.get(URL + item[0], params=item[1], headers=HEADERS, cookies=cookies)
-    return lambda: do_heartbeat(pl, cookies)
-
-
-def do_heartbeat(portal_link, cookies):
-    url = URL + '/portal/page/doHeartBeat.jsp?pl={}'.format(portal_link)
-    res_json = json_url_decode(portal_link)
-    contents = {
-        'user_ip': res_json['clientPrivateIp'],
-        'bas_ip': res_json['nasIp'],
-        'userDevPort': res_json['userDevPort'],
-        'userStatus': res_json['userStatus'],
-        'serialNo': res_json['serialNo'],
-        'language': res_json['clientLanguage'],
-        'e_d': '',
-        't': 'hb'
-    }
-    logging.info('Post {}'.format(URL + '/portal/page/doHeartBeat.jsp'))
-    logging.info('Do heartbeat')
-    logging.debug('Contents: {}'.format(str(res_json)))
-    requests.post(url, data=contents, cookies=cookies, headers=HEADERS)
+    heartbeat = lambda: do_heartbeat(pl, cookies)
+    return heartbeat, logout

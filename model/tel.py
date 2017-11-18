@@ -40,6 +40,10 @@ def get_params():
     return user_dict, index.url
 
 
+def do_logout():
+    pass
+
+
 def wifi_portal_login(username, password):
     url = URL + '/authServlet'
     contents, ref = get_params()
