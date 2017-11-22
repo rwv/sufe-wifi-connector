@@ -25,7 +25,7 @@ def stop():
         return 'Error: {}'.format(str(e))
 
 
-def status():
+def get_status():
     result = {
         "service_status": "Running" if connector.status else "Stopped",
         "internet_connection": "Online" if test_connection() else "Offline",
