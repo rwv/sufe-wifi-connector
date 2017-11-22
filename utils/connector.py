@@ -16,14 +16,14 @@ class Connector:
                            other_config['retry_times'],
                            other_config['retry_interval'])
         self.__previous_ssid = ''
-        self.__heartbeat_timer = perpetualTimer(0, lambda: None)
-        self.__heartbeat_timer.cancel()
+        self.__connect_timer = perpetualTimer(0, lambda: None)
+        self.__connect_timer.cancel()
         self.status = False
 
     def start(self):
         logging.info('sufe-wifi connector start')
-        self.__heartbeat_timer = perpetualTimer(other_config['detect_interval'], self.__connect)
-        self.__heartbeat_timer.start()
+        self.__connect_timer = perpetualTimer(other_config['detect_interval'], self.__connect)
+        self.__connect_timer.start()
         self.status = True
 
     def __connect(self):
@@ -42,9 +42,10 @@ class Connector:
                 self.__previous_ssid = network_ssid
 
     def stop(self):
-
+        self.__connect_timer.cancel()
+        self.__wifi.cancel_heartbeat()
+        self.__wifi.logout()
         logging.info('sufe-wifi connector stop')
-        self.__heartbeat_timer.cancel()
         self.status = False
 
     def reload(self):
