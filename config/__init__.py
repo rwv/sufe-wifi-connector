@@ -4,17 +4,17 @@ cf = configparser.ConfigParser()
 cf.read('config.ini', encoding='utf8')
 
 login_config = {
-    'type': cf.get('login', 'type'),
+    'network_type': cf.get('login', 'network_type'),
     'username': cf.get('login', 'username'),
     'password': cf.get('login', 'password'),
 }
 
 other_config = {
     'os': cf.get('other', 'os'),
-    'interval': cf.getint('other', 'interval'),
-    'retry-times': cf.getint('other', 'retry-times'),
-    'retry-interval': cf.getint('other', 'retry-interval'),
-    'log-level': cf.get('other', 'log-level')
+    'detect_interval': cf.getint('other', 'detect_interval'),
+    'retry_times': cf.getint('other', 'retry_times'),
+    'retry_interval': cf.getint('other', 'retry_interval'),
+    'log_level': cf.get('other', 'log_level')
 }
 
 

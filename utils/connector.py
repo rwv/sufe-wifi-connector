@@ -12,9 +12,9 @@ class Connector:
         logging.debug('login_config: {}'.format(str(login_config)))
         logging.debug('other_config: {}'.format(str(other_config)))
         self.__ssid = SSID(other_config['os'])
-        self.__wifi = Wifi(login_config['username'], login_config['password'], login_config['type'],
-                           other_config['retry-times'],
-                           other_config['retry-interval'])
+        self.__wifi = Wifi(login_config['username'], login_config['password'], login_config['network_type'],
+                           other_config['retry_times'],
+                           other_config['retry_interval'])
         self.__previous_ssid = ''
         self.__heartbeat_timer = perpetualTimer(0, lambda: None)
         self.__heartbeat_timer.cancel()
@@ -22,14 +22,14 @@ class Connector:
 
     def start(self):
         logging.info('sufe-wifi connector start')
-        self.__heartbeat_timer = perpetualTimer(other_config['interval'], self.__connect)
+        self.__heartbeat_timer = perpetualTimer(other_config['detect_interval'], self.__connect)
         self.__heartbeat_timer.start()
         self.status = True
 
     def __connect(self):
         network_ssid = self.__ssid.get()
         logging.debug(network_ssid)
-        if network_ssid == 'sufe-{}'.format(login_config['type']):
+        if network_ssid == 'sufe-{}'.format(login_config['network_type']):
             if self.__previous_ssid != network_ssid:
                 logging.info('Current Network SSID is {}'.format(network_ssid))
                 self.__previous_ssid = network_ssid
@@ -51,9 +51,9 @@ class Connector:
         logging.info('sufe-wifi connector reload')
         logging.debug('login_config: {}'.format(str(login_config)))
         logging.debug('other_config: {}'.format(str(other_config)))
-        self.__wifi = Wifi(login_config['username'], login_config['password'], login_config['type'],
-                           other_config['retry-times'],
-                           other_config['retry-interval'])
+        self.__wifi = Wifi(login_config['username'], login_config['password'], login_config['network_type'],
+                           other_config['retry_times'],
+                           other_config['retry_interval'])
         if self.status:
             self.stop()
             self.start()
