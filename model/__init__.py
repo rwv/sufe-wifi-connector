@@ -24,10 +24,12 @@ class Wifi:
         self.__heartbeat_timer.cancel()
         logging.info('Trying to login the Wi-Fi portal')
         do_heartbeat = None
+        login_exception = None
         for i in range(self.__retry_times):
             try:
                 do_heartbeat, self.__logout = self.__login()
-            except:
+            except Exception as e:
+                login_exception = e
                 logging.warning('Portal login failed for {} times'.format(i))
                 sleep(self.__retry_interval)
                 pass
@@ -36,7 +38,7 @@ class Wifi:
                 break
         if not do_heartbeat:
             logging.error('Login failure for {} times'.format(self.__retry_times))
-            raise Exception('Login failure for {} times'.format(self.__retry_times))
+            raise Exception('Login failure for {} times'.format(self.__retry_times), login_exception)
         self.__heartbeat_timer = perpetualTimer(600, do_heartbeat)
         self.__heartbeat_timer.start()
         return 'Success'
