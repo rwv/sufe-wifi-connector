@@ -7,7 +7,7 @@ Shanghai University of Finance and Economics Wi-Fi connector
 
 |  | 电信 | 联通 | 移动 |
 | :-: | :-: | :-: | :-: |
-| Windows |  |  |  |
+| Windows |  | √ | √ |
 | macOS |  | √ | √ |
 | Linux |  | √ | √ |
 
@@ -15,8 +15,9 @@ Shanghai University of Finance and Economics Wi-Fi connector
 注：
 
 1. 联通在 macOS 10.13 上经过测试成功
-1. Linux 未测试
-1. 移动未测试（似乎登陆逻辑和联通一样）
+2. Linux 未测试
+3. Windows 未测试
+4. 移动未测试（似乎登陆逻辑和联通一样）
 
 ## 使用方法
 
@@ -30,12 +31,12 @@ Shanghai University of Finance and Economics Wi-Fi connector
 
 ## TODO
 
-* [ ] Windows
+* [x] Windows
 * [x] Linux
 * [ ] 电信
 * [x] 移动
 * [ ] Travis-CI 和 Coveralls
 * [x] Log
 * [x] 跨平台生成可执行文件, Using pyinstaller
-
+* [x] RPC & Web Frontend
 

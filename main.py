@@ -1,8 +1,9 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
+from xmlrpc.server import SimpleXMLRPCServer
+
 from utils.control import start, stop, get_log, get_config, update_config, get_status
 
 if __name__ == '__main__':
@@ -37,4 +38,5 @@ if __name__ == '__main__':
         server.register_function(get_status)
 
         # Run the server's main loop
+        print('RPC Server started.')
         server.serve_forever()
