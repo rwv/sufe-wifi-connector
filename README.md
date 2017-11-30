@@ -3,6 +3,8 @@ Shanghai University of Finance and Economics Wi-Fi connector
 
 上海财经大学 Wi-Fi 自动登录
 
+[Project site](https://sufe.zczc.cz)
+
 ## 支持
 
 |  | 电信 | 联通 | 移动 |
