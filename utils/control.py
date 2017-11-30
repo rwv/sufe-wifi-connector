@@ -1,14 +1,18 @@
 import config
-import utils.log
 import utils.connector
-from utils.test_connection import test_connection
+import utils.log
+from model import Wifi
 from utils.ssid import SSID
+from utils.test_connection import test_connection
 
-ssid = SSID(config.other_config['os'])
-connector = utils.connector.Connector()
+ssid = SSID(config.other_config['os'], config.login_config['network_type'])
+wifi = Wifi(config.login_config['username'], config.login_config['password'], config.login_config['network_type'],
+            config.other_config['retry_times'], config.other_config['retry_interval'])
+connector = utils.connector.Connector(ssid, wifi, config.other_config['detect_interval'])
 
 
 def start():
+    utils.log.logging.info('Service started')
     try:
         connector.start()
         return 'Success'
@@ -16,8 +20,8 @@ def start():
         return 'Error: {}'.format(str(e))
 
 
-
 def stop():
+    utils.log.logging.info('Service stopped')
     try:
         connector.stop()
         return 'Success'
@@ -38,7 +42,7 @@ def get_status():
 def update_config(data):
     try:
         config.update_config(data)
-        connector.reload()
+        reload()
         return 'Success'
     except Exception as e:
         return 'Error: {}'.format(str(e))
@@ -51,3 +55,22 @@ def get_config():
 
 def get_log():
     return utils.log.get_log()
+
+
+def reload():
+    utils.log.logging.info('Service reloaded')
+    global connector
+    if connector.status:
+        connector.stop()
+        ssid = SSID(config.other_config['os', config.login_config['network_type']])
+        wifi = Wifi(config.login_config['username'], config.login_config['password'],
+                    config.login_config['network_type'],
+                    config.other_config['retry_times'], config.other_config['retry_interval'])
+        connector = utils.connector.Connector(ssid, wifi, config.other_config['detect_interval'])
+        connector.start()
+    else:
+        ssid = SSID(config.other_config['os', config.login_config['network_type']])
+        wifi = Wifi(config.login_config['username'], config.login_config['password'],
+                    config.login_config['network_type'],
+                    config.other_config['retry_times'], config.other_config['retry_interval'])
+        connector = utils.connector.Connector(ssid, wifi, config.other_config['detect_interval'])

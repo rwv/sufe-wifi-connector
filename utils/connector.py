@@ -1,20 +1,14 @@
-from config import login_config, other_config
-from utils.test_connection import test_connection
-from utils.perpetualTimer import perpetualTimer
-from utils.ssid import SSID
 from utils.log import logging
-from model import Wifi
+from utils.perpetualTimer import perpetualTimer
+from utils.test_connection import test_connection
 
 
 class Connector:
-    def __init__(self):
+    def __init__(self, ssid, wifi, detect_interval):
         logging.info('sufe-wifi connector init')
-        logging.debug('login_config: {}'.format(str(login_config)))
-        logging.debug('other_config: {}'.format(str(other_config)))
-        self.__ssid = SSID(other_config['os'])
-        self.__wifi = Wifi(login_config['username'], login_config['password'], login_config['network_type'],
-                           other_config['retry_times'],
-                           other_config['retry_interval'])
+        self.__ssid = ssid
+        self.__wifi = wifi
+        self.__detect_interval = detect_interval
         self.__previous_ssid = ''
         self.__connect_timer = perpetualTimer(0, lambda: None)
         self.__connect_timer.cancel()
@@ -22,19 +16,23 @@ class Connector:
 
     def start(self):
         logging.info('sufe-wifi connector start')
-        self.__connect_timer = perpetualTimer(other_config['detect_interval'], self.__connect)
+        self.__connect()
+        self.__connect_timer = perpetualTimer(self.__detect_interval, self.__connect)
         self.__connect_timer.start()
         self.status = True
 
     def __connect(self):
         network_ssid = self.__ssid.get()
-        logging.debug(network_ssid)
-        if network_ssid == 'sufe-{}'.format(login_config['network_type']):
+        logging.debug('Current Network SSID is {}'.format(network_ssid))
+        if self.__ssid.check():
             if self.__previous_ssid != network_ssid:
                 logging.info('Current Network SSID is {}'.format(network_ssid))
                 self.__previous_ssid = network_ssid
             if not test_connection():
-                self.__wifi.login()
+                try:
+                    self.__wifi.login()
+                except Exception as e:
+                    logging.critical('Login Failed: {}'.format(str(e)))
         else:
             self.__wifi.cancel_heartbeat()
             if self.__previous_ssid != network_ssid:
@@ -43,18 +41,7 @@ class Connector:
 
     def stop(self):
         self.__connect_timer.cancel()
-        self.__wifi.cancel_heartbeat()
         self.__wifi.logout()
         logging.info('sufe-wifi connector stop')
         self.status = False
 
-    def reload(self):
-        logging.info('sufe-wifi connector reload')
-        logging.debug('login_config: {}'.format(str(login_config)))
-        logging.debug('other_config: {}'.format(str(other_config)))
-        self.__wifi = Wifi(login_config['username'], login_config['password'], login_config['network_type'],
-                           other_config['retry_times'],
-                           other_config['retry_interval'])
-        if self.status:
-            self.stop()
-            self.start()
