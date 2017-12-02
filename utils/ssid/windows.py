@@ -61,32 +61,12 @@ def subprocess_args(include_stdout=True):
     return ret
 
 
-# A simple test routine. Compare this output when run by Python, Pyinstaller,
-# and Pyinstaller ``--noconsole``.
-if __name__ == '__main__':
-    # Save the output from invoking Python to a text file. This is the only
-    # option when running with ``--noconsole``.
-    with open('out.txt', 'w') as f:
-        try:
-            txt = subprocess.check_output(['python', '--help'],
-                                          **subprocess_args(False))
-            f.write(txt)
-        except OSError as e:
-            f.write('Failed: ' + str(e))
-
-
 def get_wifi_ssid():
     try:
-        # results = check_output(["netsh", "wlan", "show", "interfaces"], shell=True).decode('gbk')
-        with open('ssid.tmp', 'w', encoding='utf8') as f:
-            txt = subprocess.check_output(['netsh', 'wlan', 'show', 'interfaces'],
-                                          **subprocess_args(False)).decode('gbk')
-            f.write(txt)
-        with open('ssid.tmp', 'r', encoding='utf8') as f:
-            results = f.read()
-            logging.debug('netsh wlan show interfaces: \n{}'.format(results))
-            ssid = re.findall('SSID\s*: (.*)\n', results)[0]
+        txt = subprocess.check_output(['netsh', 'wlan', 'show', 'interfaces'],
+                                      **subprocess_args(False)).decode('gbk')
+        ssid = re.findall('SSID\s*: (.*)\n', txt)[0]
     except Exception as e:
         logging.warning('Exception: {}'.format(str(e)))
         ssid = ''
-    return ssid
+    return ssid.strip()
