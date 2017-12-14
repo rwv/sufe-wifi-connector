@@ -34,7 +34,8 @@ Shanghai University of Finance and Economics Wi-Fi connector
 ## TODO
 
 * [ ] Travis-CI 和 Coveralls
-* [ ] docstring
+* [ ] unittest
+* [x] docstring(part)
 * [x] Windows
 * [x] Linux
 * [x] 电信

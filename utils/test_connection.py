@@ -2,6 +2,10 @@ import requests
 
 
 def test_connection():
+    """
+    test internet connection via http://http204.sinaapp.com/generate_204
+    :return: True if success else False
+    """
     url = r'http://http204.sinaapp.com/generate_204'
     try:
         r = requests.get(url)

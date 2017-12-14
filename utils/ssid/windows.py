@@ -62,6 +62,12 @@ def subprocess_args(include_stdout=True):
 
 
 def get_wifi_ssid():
+    """
+    get wifi ssid in windows system
+    by executing "netsh wlan show interfaces"
+
+    :return: the first ssid of windows wlan and '' if failed to fetch
+    """
     try:
         txt = subprocess.check_output(['netsh', 'wlan', 'show', 'interfaces'],
                                       **subprocess_args(False)).decode('gbk')

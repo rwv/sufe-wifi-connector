@@ -11,6 +11,9 @@ if __name__ == '__main__':
 
 
     class RequestHandler(SimpleXMLRPCRequestHandler):
+        """
+        a SimpleXMLRPCRequestHandler instance that add OPTIONS methods
+        """
         rpc_paths = ('/RPC2',)
 
         def do_OPTIONS(self):

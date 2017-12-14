@@ -23,6 +23,11 @@ session = requests.Session()
 
 
 def get_params():
+    """
+    get the params
+
+    :returns: a dict of params got from the web page content, the next portal url
+    """
     global session
     logging.info('Get http://www.example.com')
     res = session.get('http://www.example.com')
@@ -45,6 +50,11 @@ def get_params():
 
 
 def do_logout(paramStr):
+    """
+    do the logout
+
+    :param paramStr: the paramStr in the web page
+    """
     url = URL + "/logoutServlet"
     contents = {
         'paramStr': paramStr,
@@ -62,6 +72,13 @@ def do_heartbeat():
 
 
 def wifi_portal_login(username, password):
+    """
+    do the login
+
+    :param username: username
+    :param password: password
+    :returns: heartbeat function, logout function
+    """
     global session
     session = requests.Session()
     url = URL + '/authServlet'

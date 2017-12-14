@@ -4,6 +4,7 @@ import time
 
 import requests
 from bs4 import BeautifulSoup
+
 from utils.log import logging
 
 HOST = '202.121.129.151:8080'
@@ -23,6 +24,11 @@ HEADERS = {
 
 
 def get_params():
+    """
+    get the params from the web page
+
+    :returns: a dict of params got from the web page content, cookies
+    """
     url = URL + '/portal/index_custom11.jsp'
     logging.info('Get {}'.format(url))
     res = requests.get(url, headers=HEADERS)
@@ -40,6 +46,12 @@ def get_params():
 
 
 def json_url_decode(text):
+    """
+    Decode the serialized and base64 string of json
+
+    :param text: serialized and base64 string of json
+    :return: the decode content of parsed json
+    """
     data = text.encode()
     missing_padding = len(data) % 4
     if missing_padding != 0:
@@ -48,6 +60,12 @@ def json_url_decode(text):
 
 
 def do_heartbeat(portal_link, cookies):
+    """
+    do the heartbeat
+
+    :param portal_link: the portal link fetched in the login process
+    :param cookies: cookies
+    """
     url = URL + '/portal/page/doHeartBeat.jsp?pl={}'.format(portal_link)
     res_json = json_url_decode(portal_link)
     contents = {
@@ -67,6 +85,12 @@ def do_heartbeat(portal_link, cookies):
 
 
 def do_logout(contents=None, cookies=None):
+    """
+    do the logout
+
+    :param contents: the contents to logout, same as get_params()
+    :param cookies: the cookies
+    """
     if not contents:
         contents, cookies = get_params()
     url = URL + '/portal/pws?t=lo'
@@ -77,6 +101,13 @@ def do_logout(contents=None, cookies=None):
 
 
 def wifi_portal_login(username, password):
+    """
+    do the login
+
+    :param username: username
+    :param password: password
+    :returns: (heartbeat function, logout function)
+    """
     url = URL + '/portal/pws?t=li'
     contents, cookies = get_params()
     logout = lambda: do_logout(contents, cookies)

@@ -1,4 +1,5 @@
 import logging
+
 from config import other_config
 
 logging.basicConfig(level=eval('logging.{}'.format(other_config['log_level'])),
@@ -9,5 +10,10 @@ logging.basicConfig(level=eval('logging.{}'.format(other_config['log_level'])),
 
 
 def get_log():
+    """
+    get log
+
+    :return: log
+    """
     with open('log.log', encoding='utf8') as log_contents:
         return log_contents.read()

@@ -1,9 +1,16 @@
 import re
 import subprocess
+
 from utils.log import logging
 
 
 def get_wifi_ssid():
+    """
+    get wifi ssid in mac system
+    by executing "/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I"
+
+    :return: the first ssid of mac wlan and '' if failed to fetch
+    """
     result = subprocess.run(
         ['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'],
         stdout=subprocess.PIPE)
