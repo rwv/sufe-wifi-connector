@@ -3,7 +3,9 @@ Shanghai University of Finance and Economics Wi-Fi connector
 
 上海财经大学 Wi-Fi 自动登录
 
-[Project site](https://sufe.zczc.cz)
+**Because the auth method has changed, this project is deprecated.**<br>
+**由于登录方式的改变，此项目已废弃。**
+
 
 ## 支持
 
